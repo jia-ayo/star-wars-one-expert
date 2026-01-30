@@ -28,7 +28,7 @@ def main():
         client.get_collection(collection_name=COLLECTION_NAME)
         vectorstore = QdrantVectorStore(
             collection_name=COLLECTION_NAME,
-            embeddings=emdeddings,
+            embeddings=embeddings,
             client=client,
         )
     except Exception:
@@ -59,10 +59,10 @@ def main():
         
         for script in star_wars_scripts:
             doc = load_star_wars_script(script["url"], script["title"])
-            chuncks = script_splitter.split_documents([doc])
-            all_chunks.extend(chuncks)
+            chunks = script_splitter.split_documents([doc])
+            all_chunks.extend(chunks)
             print(
-                f"Loaded and split script for {script['title']} into {len(chuncks)} chunks."
+                f"Loaded and split script for {script['title']} into {len(chunks)} chunks."
             )
         
         vectorstore = QdrantVectorStore.from_documents(
@@ -72,7 +72,7 @@ def main():
             collection_name=COLLECTION_NAME,
         )
 
-    retriever = vectorstore.as_retriever(search_kwags={"k": 15})
+    retriever = vectorstore.as_retriever(search_kwargs={"k": 15})
     template = """
     You are a Star Wars Movie Script Expert. Use ONLY the following script excerpts to answer.
     If the answer is partly contained, provide the best possible answer based on text in the context.
